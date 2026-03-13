@@ -1,6 +1,12 @@
 # ai-starter
 
-Minimal AI playground for local development with OpenAI Responses API.
+Minimal AI workbench for local development with the OpenAI Responses API.
+
+Built for a clean Windows + WSL + Docker workflow. It starts small, but it already feels like a real tool instead of a throwaway demo.
+
+## What It Does
+
+`ai-starter` is a local-first prompt workbench for coding and debugging workflows. You can use it to test prompts, compare models, load reusable prompt setups, attach context, and iterate on multi-turn sessions without dragging in a heavy framework.
 
 ## Stack
 
@@ -30,31 +36,38 @@ Minimal AI playground for local development with OpenAI Responses API.
 - Export and import session history as JSON
 - Local multi-turn conversation state with a resettable current session
 
-## Setup
-
-```bash
-cp .env.example .env
-```
-
-Set `OPENAI_API_KEY` in `.env`.
-
-## Run
+## Quick Start
 
 ### Local
 
 ```bash
 npm install
+cp .env.example .env
+```
+
+Set `OPENAI_API_KEY` in `.env`, then run:
+
+```bash
 npm run dev
 npm run smoke
 ```
 
 ### Docker
 
+Create `.env` first, then run:
+
 ```bash
 docker compose up --build
 ```
 
 Open [http://localhost:3001](http://localhost:3001)
+
+## Why This Repo Exists
+
+- Start from a working OpenAI integration instead of a blank folder
+- Keep the surface area small enough to understand quickly
+- Make local development clean on Windows, WSL, or Docker
+- Provide a base you can grow into an internal tool or product prototype
 
 ## Endpoints
 
@@ -65,3 +78,13 @@ Open [http://localhost:3001](http://localhost:3001)
 
 - Press `F5` to launch the app
 - Use the `npm: smoke` task to verify the local server
+
+## Security Notes
+
+- Keep real credentials in `.env`, not in tracked files
+- `.env` and `.env.local` are already ignored by Git
+- Use `.env.example` as the public template
+
+## License
+
+MIT. See [LICENSE](./LICENSE).
