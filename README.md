@@ -25,6 +25,7 @@ Minimal AI playground for local development with OpenAI Responses API.
 - One-click preset loading for debugging, review, API design, and explanation
 - Streaming text responses in the UI
 - Context textarea and file upload for code, logs, and notes
+- Export and import session history as JSON
 
 ## Setup
 

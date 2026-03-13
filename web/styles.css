@@ -95,6 +95,25 @@ select {
   gap: 12px;
 }
 
+.history-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.import-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, var(--accent-2), #6b92d9);
+  color: #0d1220;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0;
+}
+
 .context-tools {
   display: flex;
   align-items: center;

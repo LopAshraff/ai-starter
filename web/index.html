@@ -62,7 +62,12 @@
             <h2>History</h2>
             <p class="panel-copy">Recent prompts stay local in this browser.</p>
           </div>
-          <button id="clear-history">Clear</button>
+          <div class="history-actions">
+            <button id="export-session">Export</button>
+            <label class="import-label" for="import-session">Import</label>
+            <input id="import-session" type="file" accept="application/json" hidden />
+            <button id="clear-history">Clear</button>
+          </div>
         </div>
         <div id="history" class="history-list">
           <p class="empty-state">No prompts yet.</p>

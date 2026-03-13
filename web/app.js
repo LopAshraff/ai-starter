@@ -7,6 +7,8 @@ const fileEl = document.querySelector("#file");
 const runEl = document.querySelector("#run");
 const copyEl = document.querySelector("#copy");
 const clearHistoryEl = document.querySelector("#clear-history");
+const exportSessionEl = document.querySelector("#export-session");
+const importSessionEl = document.querySelector("#import-session");
 const applyPresetEl = document.querySelector("#apply-preset");
 const resultEl = document.querySelector("#result");
 const statusEl = document.querySelector("#status");
@@ -131,6 +133,42 @@ clearHistoryEl.addEventListener("click", () => {
   localStorage.removeItem(historyKey);
   renderHistory();
   statusEl.textContent = "History cleared";
+});
+
+exportSessionEl.addEventListener("click", () => {
+  const payload = {
+    exportedAt: new Date().toISOString(),
+    history: readHistory()
+  };
+
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {
+    type: "application/json"
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "ai-starter-session.json";
+  link.click();
+  URL.revokeObjectURL(url);
+  statusEl.textContent = "Session exported";
+});
+
+importSessionEl.addEventListener("change", async event => {
+  const file = event.target.files?.[0];
+  if (!file) return;
+
+  try {
+    const text = await file.text();
+    const payload = JSON.parse(text);
+    const history = Array.isArray(payload.history) ? payload.history : [];
+    localStorage.setItem(historyKey, JSON.stringify(history.slice(0, 8)));
+    renderHistory();
+    statusEl.textContent = "Session imported";
+  } catch {
+    statusEl.textContent = "Import failed";
+  } finally {
+    importSessionEl.value = "";
+  }
 });
 
 applyPresetEl.addEventListener("click", () => {
