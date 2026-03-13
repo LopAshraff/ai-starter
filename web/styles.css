@@ -202,6 +202,32 @@ button:disabled {
   margin-bottom: 18px;
 }
 
+.conversation-list {
+  display: grid;
+  gap: 12px;
+}
+
+.conversation-item {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #10151c;
+  padding: 14px 16px;
+}
+
+.conversation-role {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--accent-2);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.conversation-item p {
+  margin-bottom: 0;
+  color: var(--text);
+}
+
 .saved-item {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;

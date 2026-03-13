@@ -28,6 +28,7 @@ Minimal AI playground for local development with OpenAI Responses API.
 - Streaming text responses in the UI
 - Context textarea and file upload for code, logs, and notes
 - Export and import session history as JSON
+- Local multi-turn conversation state with a resettable current session
 
 ## Setup
 

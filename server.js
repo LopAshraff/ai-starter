@@ -67,6 +67,7 @@ const server = http.createServer(async (req, res) => {
     const system = String(body.system ?? "").trim();
     const selectedModel = String(body.model ?? defaultModel).trim() || defaultModel;
     const shouldStream = Boolean(body.stream);
+    const history = Array.isArray(body.history) ? body.history : [];
 
     if (!prompt) {
       return sendJson(res, 400, { error: "Prompt is required." });
@@ -79,7 +80,13 @@ const server = http.createServer(async (req, res) => {
     }
 
     try {
-      const finalInput = context ? `Context:\n${context}\n\nPrompt:\n${prompt}` : prompt;
+      const transcript = history
+        .filter(item => item && typeof item.role === "string" && typeof item.content === "string")
+        .slice(-12)
+        .map(item => `${item.role.toUpperCase()}:\n${item.content.trim()}`)
+        .join("\n\n");
+      const currentTurn = context ? `Context:\n${context}\n\nPrompt:\n${prompt}` : prompt;
+      const finalInput = transcript ? `${transcript}\n\nUSER:\n${currentTurn}` : currentTurn;
 
       if (shouldStream) {
         res.writeHead(200, {

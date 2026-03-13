@@ -64,7 +64,20 @@
 
         <div class="actions">
           <button id="run">Run prompt</button>
+          <button id="new-chat" type="button">New chat</button>
           <span id="status">Idle</span>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="output-head">
+          <div>
+            <h2>Current session</h2>
+            <p class="panel-copy">The active conversation stays local and is sent as context on the next turn.</p>
+          </div>
+        </div>
+        <div id="conversation" class="conversation-list">
+          <p class="empty-state">No conversation yet.</p>
         </div>
       </section>
 

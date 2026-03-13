@@ -5,6 +5,7 @@ const modelEl = document.querySelector("#model");
 const presetEl = document.querySelector("#preset");
 const fileEl = document.querySelector("#file");
 const runEl = document.querySelector("#run");
+const newChatEl = document.querySelector("#new-chat");
 const copyEl = document.querySelector("#copy");
 const clearHistoryEl = document.querySelector("#clear-history");
 const exportSessionEl = document.querySelector("#export-session");
@@ -20,8 +21,10 @@ const fileStateEl = document.querySelector("#file-state");
 const metaEl = document.querySelector("#meta");
 const historyEl = document.querySelector("#history");
 const savedPromptsEl = document.querySelector("#saved-prompts");
+const conversationEl = document.querySelector("#conversation");
 const historyKey = "ai-starter-history";
 const savedPromptsKey = "ai-starter-saved-prompts";
+const conversationKey = "ai-starter-conversation";
 const presets = [
   {
     id: "debug",
@@ -57,16 +60,19 @@ await loadHealth();
 loadPresets();
 renderHistory();
 renderSavedPrompts();
+renderConversation();
 
 historySearchEl.addEventListener("input", () => {
   renderHistory();
 });
 
 runEl.addEventListener("click", async () => {
+  const conversation = readConversation();
   statusEl.textContent = "Running...";
   resultEl.innerHTML = "<p>Waiting for response...</p>";
   metaEl.textContent = `Model: ${modelEl.value}`;
   runEl.disabled = true;
+  newChatEl.disabled = true;
 
   try {
     const response = await fetch("/api/chat", {
@@ -79,7 +85,8 @@ runEl.addEventListener("click", async () => {
         model: modelEl.value,
         system: systemEl.value,
         prompt: promptEl.value,
-        context: contextEl.value
+        context: contextEl.value,
+        history: conversation
       })
     });
 
@@ -95,9 +102,12 @@ runEl.addEventListener("click", async () => {
         output: data.error ?? "Request failed.",
         ok: false
       });
+      appendConversation("user", buildUserTurn(promptEl.value, contextEl.value));
+      appendConversation("assistant", data.error ?? "Request failed.");
       return;
     }
 
+    appendConversation("user", buildUserTurn(promptEl.value, contextEl.value));
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let fullText = "";
@@ -119,6 +129,7 @@ runEl.addEventListener("click", async () => {
       output: fullText || "No text output.",
       ok: true
     });
+    appendConversation("assistant", fullText || "No text output.");
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error.";
     resultEl.innerHTML = renderMarkdown(message);
@@ -129,8 +140,11 @@ runEl.addEventListener("click", async () => {
       output: message,
       ok: false
     });
+    appendConversation("user", buildUserTurn(promptEl.value, contextEl.value));
+    appendConversation("assistant", message);
   } finally {
     runEl.disabled = false;
+    newChatEl.disabled = false;
   }
 });
 
@@ -213,6 +227,12 @@ savePromptEl.addEventListener("click", () => {
   renderSavedPrompts();
   saveNameEl.value = "";
   statusEl.textContent = `Saved prompt: ${name}`;
+});
+
+newChatEl.addEventListener("click", () => {
+  localStorage.removeItem(conversationKey);
+  renderConversation();
+  statusEl.textContent = "Started a new chat";
 });
 
 fileEl.addEventListener("change", async event => {
@@ -338,6 +358,26 @@ function renderSavedPrompts() {
   }
 }
 
+function renderConversation() {
+  const conversation = readConversation();
+
+  if (!conversation.length) {
+    conversationEl.innerHTML = '<p class="empty-state">No conversation yet.</p>';
+    return;
+  }
+
+  conversationEl.innerHTML = conversation
+    .map(
+      item => `
+        <div class="conversation-item">
+          <span class="conversation-role">${escapeHtml(item.role)}</span>
+          ${renderMarkdown(item.content ?? "")}
+        </div>
+      `
+    )
+    .join("");
+}
+
 function readHistory() {
   try {
     return JSON.parse(localStorage.getItem(historyKey) ?? "[]");
@@ -352,6 +392,25 @@ function readSavedPrompts() {
   } catch {
     return [];
   }
+}
+
+function readConversation() {
+  try {
+    return JSON.parse(localStorage.getItem(conversationKey) ?? "[]");
+  } catch {
+    return [];
+  }
+}
+
+function appendConversation(role, content) {
+  const conversation = readConversation();
+  conversation.push({
+    role,
+    content,
+    createdAt: new Date().toISOString()
+  });
+  localStorage.setItem(conversationKey, JSON.stringify(conversation.slice(-12)));
+  renderConversation();
 }
 
 function loadSavedPrompt(name) {
@@ -379,6 +438,12 @@ function buildSessionTitle(prompt) {
   const normalized = (prompt ?? "").replace(/\s+/g, " ").trim();
   if (!normalized) return "Untitled session";
   return trimText(normalized, 40);
+}
+
+function buildUserTurn(prompt, context) {
+  const trimmedContext = String(context ?? "").trim();
+  const trimmedPrompt = String(prompt ?? "").trim();
+  return trimmedContext ? `Context:\n${trimmedContext}\n\nPrompt:\n${trimmedPrompt}` : trimmedPrompt;
 }
 
 function trimText(text, maxLength) {
