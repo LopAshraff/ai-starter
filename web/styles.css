@@ -95,6 +95,14 @@ select {
   gap: 12px;
 }
 
+.context-tools {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  color: var(--muted);
+}
+
 button {
   border: 0;
   border-radius: 999px;

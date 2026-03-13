@@ -42,6 +42,14 @@
         <label for="prompt">Prompt</label>
         <textarea id="prompt" rows="8" placeholder="Ask for code, debugging help, or an explanation."></textarea>
 
+        <label for="context">Context</label>
+        <textarea id="context" rows="8" placeholder="Paste code, logs, notes, or upload a text file below."></textarea>
+
+        <div class="context-tools">
+          <input id="file" type="file" accept=".txt,.md,.js,.ts,.json,.css,.html,.py,.yml,.yaml,.cs,.go,.java,.sh,.ps1,.log" />
+          <span id="file-state">No file loaded.</span>
+        </div>
+
         <div class="actions">
           <button id="run">Run prompt</button>
           <span id="status">Idle</span>

@@ -63,6 +63,7 @@ const server = http.createServer(async (req, res) => {
 
     const body = await readJson(req);
     const prompt = String(body.prompt ?? "").trim();
+    const context = String(body.context ?? "").trim();
     const system = String(body.system ?? "").trim();
     const selectedModel = String(body.model ?? defaultModel).trim() || defaultModel;
     const shouldStream = Boolean(body.stream);
@@ -78,6 +79,8 @@ const server = http.createServer(async (req, res) => {
     }
 
     try {
+      const finalInput = context ? `Context:\n${context}\n\nPrompt:\n${prompt}` : prompt;
+
       if (shouldStream) {
         res.writeHead(200, {
           "content-type": "text/plain; charset=utf-8",
@@ -88,7 +91,7 @@ const server = http.createServer(async (req, res) => {
         const stream = await client.responses.create({
           model: selectedModel,
           instructions: system || "You are a concise and practical coding assistant.",
-          input: prompt,
+          input: finalInput,
           stream: true
         });
 
@@ -105,7 +108,7 @@ const server = http.createServer(async (req, res) => {
       const response = await client.responses.create({
         model: selectedModel,
         instructions: system || "You are a concise and practical coding assistant.",
-        input: prompt
+        input: finalInput
       });
 
       return sendJson(res, 200, {

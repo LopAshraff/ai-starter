@@ -24,6 +24,7 @@ Minimal AI playground for local development with OpenAI Responses API.
 - Lightweight markdown rendering for responses
 - One-click preset loading for debugging, review, API design, and explanation
 - Streaming text responses in the UI
+- Context textarea and file upload for code, logs, and notes
 
 ## Setup
 

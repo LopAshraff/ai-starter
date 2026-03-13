@@ -1,7 +1,9 @@
 const systemEl = document.querySelector("#system");
 const promptEl = document.querySelector("#prompt");
+const contextEl = document.querySelector("#context");
 const modelEl = document.querySelector("#model");
 const presetEl = document.querySelector("#preset");
+const fileEl = document.querySelector("#file");
 const runEl = document.querySelector("#run");
 const copyEl = document.querySelector("#copy");
 const clearHistoryEl = document.querySelector("#clear-history");
@@ -9,6 +11,7 @@ const applyPresetEl = document.querySelector("#apply-preset");
 const resultEl = document.querySelector("#result");
 const statusEl = document.querySelector("#status");
 const apiKeyStateEl = document.querySelector("#api-key-state");
+const fileStateEl = document.querySelector("#file-state");
 const metaEl = document.querySelector("#meta");
 const historyEl = document.querySelector("#history");
 const historyKey = "ai-starter-history";
@@ -63,7 +66,8 @@ runEl.addEventListener("click", async () => {
         stream: true,
         model: modelEl.value,
         system: systemEl.value,
-        prompt: promptEl.value
+        prompt: promptEl.value,
+        context: contextEl.value
       })
     });
 
@@ -137,6 +141,19 @@ applyPresetEl.addEventListener("click", () => {
   systemEl.value = preset.system;
   promptEl.value = preset.prompt;
   statusEl.textContent = `Preset loaded: ${preset.label}`;
+});
+
+fileEl.addEventListener("change", async event => {
+  const file = event.target.files?.[0];
+  if (!file) {
+    fileStateEl.textContent = "No file loaded.";
+    return;
+  }
+
+  const text = await file.text();
+  contextEl.value = `# File: ${file.name}\n\n${text}`;
+  fileStateEl.textContent = `${file.name} loaded`;
+  statusEl.textContent = "Context file loaded";
 });
 
 async function loadHealth() {
