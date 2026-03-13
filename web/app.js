@@ -1,17 +1,50 @@
 const systemEl = document.querySelector("#system");
 const promptEl = document.querySelector("#prompt");
 const modelEl = document.querySelector("#model");
+const presetEl = document.querySelector("#preset");
 const runEl = document.querySelector("#run");
 const copyEl = document.querySelector("#copy");
 const clearHistoryEl = document.querySelector("#clear-history");
+const applyPresetEl = document.querySelector("#apply-preset");
 const resultEl = document.querySelector("#result");
 const statusEl = document.querySelector("#status");
 const apiKeyStateEl = document.querySelector("#api-key-state");
 const metaEl = document.querySelector("#meta");
 const historyEl = document.querySelector("#history");
 const historyKey = "ai-starter-history";
+const presets = [
+  {
+    id: "debug",
+    label: "Debug code",
+    model: "gpt-5",
+    system: "You are a concise and practical debugging assistant. Explain root cause first, then propose the smallest correct fix.",
+    prompt: "Debug this issue. Explain the root cause, the fix, and the most important regression tests."
+  },
+  {
+    id: "review",
+    label: "Review changes",
+    model: "gpt-5",
+    system: "You are a rigorous code reviewer. Prioritize bugs, regressions, and missing tests. Be direct and specific.",
+    prompt: "Review this code change and list the most important findings first."
+  },
+  {
+    id: "api",
+    label: "Design API",
+    model: "gpt-5-mini",
+    system: "You are a senior backend engineer. Design APIs with explicit request and response shapes.",
+    prompt: "Design a small HTTP API for this feature. Include routes, request bodies, responses, and edge cases."
+  },
+  {
+    id: "explain",
+    label: "Explain code",
+    model: "gpt-4.1-mini",
+    system: "You explain code clearly and briefly. Focus on how it works and why it is structured that way.",
+    prompt: "Explain this code in plain language and highlight the key moving parts."
+  }
+];
 
 await loadHealth();
+loadPresets();
 renderHistory();
 
 runEl.addEventListener("click", async () => {
@@ -82,6 +115,16 @@ clearHistoryEl.addEventListener("click", () => {
   statusEl.textContent = "History cleared";
 });
 
+applyPresetEl.addEventListener("click", () => {
+  const preset = presets.find(item => item.id === presetEl.value);
+  if (!preset) return;
+
+  modelEl.value = preset.model;
+  systemEl.value = preset.system;
+  promptEl.value = preset.prompt;
+  statusEl.textContent = `Preset loaded: ${preset.label}`;
+});
+
 async function loadHealth() {
   const response = await fetch("/api/health");
   const data = await response.json();
@@ -97,6 +140,12 @@ async function loadHealth() {
 
   apiKeyStateEl.textContent = data.hasApiKey ? "Loaded" : "Missing";
   metaEl.textContent = `Default model: ${data.defaultModel}`;
+}
+
+function loadPresets() {
+  presetEl.innerHTML = presets
+    .map(preset => `<option value="${preset.id}">${preset.label}</option>`)
+    .join("");
 }
 
 function appendHistory(entry) {

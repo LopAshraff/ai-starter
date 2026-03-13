@@ -22,6 +22,7 @@ Minimal AI playground for local development with OpenAI Responses API.
 - Runtime model picker in the UI
 - Local prompt history in the browser
 - Lightweight markdown rendering for responses
+- One-click preset loading for debugging, review, API design, and explanation
 
 ## Setup
 

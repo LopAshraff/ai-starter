@@ -132,6 +132,13 @@ button:disabled {
   align-items: end;
 }
 
+.preset-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: end;
+}
+
 .health {
   min-height: 52px;
   margin-bottom: 16px;
@@ -220,6 +227,10 @@ button:disabled {
   }
 
   .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .preset-bar {
     grid-template-columns: 1fr;
   }
 }
