@@ -72,6 +72,21 @@ Open [http://localhost:3001](http://localhost:3001)
 - Make local development clean on Windows, WSL, or Docker
 - Provide a base you can grow into an internal tool or product prototype
 
+## Deploy
+
+### Render
+
+This repo includes [render.yaml](./render.yaml) for a simple single-service deploy.
+
+What you need in Render:
+
+- `OPENAI_API_KEY` as a secret environment variable
+- optional `OPENAI_MODEL` override if you do not want the default `gpt-5`
+
+Blueprint link:
+
+- [Deploy on Render](https://dashboard.render.com/blueprint/new?repo=https://github.com/LopAshraff/ai-starter)
+
 ## Endpoints
 
 - `GET /api/health`
