@@ -1,5 +1,8 @@
 # ai-starter
 
+[![CI](https://github.com/LopAshraff/ai-starter/actions/workflows/ci.yml/badge.svg)](https://github.com/LopAshraff/ai-starter/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-gold.svg)](./LICENSE)
+
 Minimal AI workbench for local development with the OpenAI Responses API.
 
 Built for a clean Windows + WSL + Docker workflow. It starts small, but it already feels like a real tool instead of a throwaway demo.
