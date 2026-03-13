@@ -13,10 +13,10 @@ loadEnv(path.join(__dirname, ".env"));
 const port = Number(process.env.PORT ?? 3001);
 const defaultModel = process.env.OPENAI_MODEL ?? "gpt-5";
 const availableModels = ["gpt-5", "gpt-5-mini", "gpt-4.1-mini"];
-const demoMode = process.env.DEMO_MODE === "1";
 const client = process.env.OPENAI_API_KEY
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   : null;
+const demoMode = process.env.DEMO_MODE === "1" || !client;
 
 const sendJson = (res, statusCode, body) => {
   res.writeHead(statusCode, {
