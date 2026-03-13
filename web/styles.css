@@ -1,0 +1,128 @@
+:root {
+  --bg: #0b0d11;
+  --panel: #12161d;
+  --panel-2: #171d26;
+  --text: #f4efe4;
+  --muted: #98a0ae;
+  --line: #242d3a;
+  --accent: #d0b47a;
+  --accent-2: #8fb7ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background:
+    radial-gradient(circle at top right, rgba(143, 183, 255, 0.16), transparent 28%),
+    radial-gradient(circle at bottom left, rgba(208, 180, 122, 0.12), transparent 30%),
+    var(--bg);
+  color: var(--text);
+}
+
+.shell {
+  width: min(980px, calc(100% - 32px));
+  margin: 48px auto;
+  display: grid;
+  gap: 18px;
+}
+
+.hero,
+.panel {
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(23, 29, 38, 0.95), rgba(18, 22, 29, 0.98));
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--accent);
+  letter-spacing: 0.18em;
+  font-size: 12px;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+.lede {
+  color: var(--muted);
+  max-width: 60ch;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+}
+
+textarea,
+button {
+  font: inherit;
+}
+
+textarea {
+  width: 100%;
+  margin-bottom: 16px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  color: var(--text);
+  padding: 14px 16px;
+  resize: vertical;
+}
+
+.actions,
+.output-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+button {
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, var(--accent), #b28946);
+  color: #111;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+#status {
+  color: var(--muted);
+}
+
+pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: #0f1319;
+  padding: 16px;
+  min-height: 240px;
+  color: #dce7ff;
+}
+
+@media (max-width: 720px) {
+  .shell {
+    width: min(100% - 20px, 980px);
+    margin: 20px auto;
+  }
+
+  .hero,
+  .panel {
+    padding: 18px;
+    border-radius: 16px;
+  }
+}

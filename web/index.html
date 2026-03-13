@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Starter</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <p class="eyebrow">LOCAL AI WORKBENCH</p>
+        <h1>Prompt fast. Inspect outputs. Stay local-first.</h1>
+        <p class="lede">
+          Minimal OpenAI playground wired for the Responses API with a clean local workflow.
+        </p>
+      </section>
+
+      <section class="panel">
+        <label for="system">System prompt</label>
+        <textarea id="system" rows="3">You are a concise and practical coding assistant.</textarea>
+
+        <label for="prompt">Prompt</label>
+        <textarea id="prompt" rows="8" placeholder="Ask for code, debugging help, or an explanation."></textarea>
+
+        <div class="actions">
+          <button id="run">Run prompt</button>
+          <span id="status">Idle</span>
+        </div>
+      </section>
+
+      <section class="panel output">
+        <div class="output-head">
+          <h2>Output</h2>
+          <button id="copy">Copy</button>
+        </div>
+        <pre id="result">No response yet.</pre>
+      </section>
+    </main>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

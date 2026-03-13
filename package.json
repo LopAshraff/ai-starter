@@ -1,0 +1,14 @@
+{
+  "name": "ai-starter",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Minimal local AI playground with OpenAI Responses API.",
+  "scripts": {
+    "dev": "node --watch server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "openai": "^5.19.1"
+  }
+}
