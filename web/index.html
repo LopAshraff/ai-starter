@@ -40,6 +40,19 @@
         </div>
       </section>
 
+      <section class="panel history-panel">
+        <div class="output-head">
+          <div>
+            <h2>History</h2>
+            <p class="panel-copy">Recent prompts stay local in this browser.</p>
+          </div>
+          <button id="clear-history">Clear</button>
+        </div>
+        <div id="history" class="history-list">
+          <p class="empty-state">No prompts yet.</p>
+        </div>
+      </section>
+
       <section class="panel output">
         <div class="output-head">
           <div>
@@ -48,7 +61,7 @@
           </div>
           <button id="copy">Copy</button>
         </div>
-        <pre id="result">No response yet.</pre>
+        <article id="result" class="markdown">No response yet.</article>
       </section>
     </main>
 

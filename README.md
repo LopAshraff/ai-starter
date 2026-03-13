@@ -20,6 +20,8 @@ Minimal AI playground for local development with OpenAI Responses API.
 - Smoke test script
 - Dev container and VS Code launch config
 - Runtime model picker in the UI
+- Local prompt history in the browser
+- Lightweight markdown rendering for responses
 
 ## Setup
 

@@ -119,6 +119,12 @@ button:disabled {
   margin: 6px 0 0;
 }
 
+.panel-copy,
+.empty-state,
+.history-meta {
+  color: var(--muted);
+}
+
 .grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 180px;
@@ -142,16 +148,63 @@ button:disabled {
   margin-bottom: 6px;
 }
 
-pre {
-  margin: 0;
-  white-space: pre-wrap;
-  word-break: break-word;
+.history-list {
+  display: grid;
+  gap: 10px;
+}
+
+.history-item {
+  width: 100%;
+  text-align: left;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: #10151c;
+  color: var(--text);
+  padding: 14px 16px;
+}
+
+.history-item strong,
+.history-item span {
+  display: block;
+}
+
+.history-model {
+  color: var(--accent-2);
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+.markdown,
+.markdown pre {
   border-radius: 14px;
   border: 1px solid var(--line);
   background: #0f1319;
+}
+
+.markdown {
+  margin: 0;
   padding: 16px;
   min-height: 240px;
   color: #dce7ff;
+  word-break: break-word;
+}
+
+.markdown p,
+.markdown pre {
+  margin: 0 0 14px;
+}
+
+.markdown pre {
+  padding: 14px;
+  overflow-x: auto;
+}
+
+.markdown code {
+  font-family: "Cascadia Code", Consolas, monospace;
+}
+
+.history-panel {
+  padding-bottom: 18px;
 }
 
 @media (max-width: 720px) {
