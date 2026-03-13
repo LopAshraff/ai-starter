@@ -21,6 +21,7 @@ Minimal AI playground for local development with OpenAI Responses API.
 - Dev container and VS Code launch config
 - Runtime model picker in the UI
 - Local prompt history in the browser
+- Searchable session history with generated titles
 - Lightweight markdown rendering for responses
 - One-click preset loading for debugging, review, API design, and explanation
 - Save reusable prompt workflows locally in the browser

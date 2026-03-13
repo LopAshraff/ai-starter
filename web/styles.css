@@ -157,6 +157,10 @@ button:disabled {
   color: var(--muted);
 }
 
+.history-title {
+  margin-bottom: 6px;
+}
+
 .grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 180px;

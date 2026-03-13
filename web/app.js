@@ -12,6 +12,7 @@ const importSessionEl = document.querySelector("#import-session");
 const applyPresetEl = document.querySelector("#apply-preset");
 const saveNameEl = document.querySelector("#save-name");
 const savePromptEl = document.querySelector("#save-prompt");
+const historySearchEl = document.querySelector("#history-search");
 const resultEl = document.querySelector("#result");
 const statusEl = document.querySelector("#status");
 const apiKeyStateEl = document.querySelector("#api-key-state");
@@ -56,6 +57,10 @@ await loadHealth();
 loadPresets();
 renderHistory();
 renderSavedPrompts();
+
+historySearchEl.addEventListener("input", () => {
+  renderHistory();
+});
 
 runEl.addEventListener("click", async () => {
   statusEl.textContent = "Running...";
@@ -250,6 +255,7 @@ function appendHistory(entry) {
   const history = readHistory();
   history.unshift({
     ...entry,
+    title: buildSessionTitle(entry.prompt),
     createdAt: new Date().toISOString()
   });
   localStorage.setItem(historyKey, JSON.stringify(history.slice(0, 8)));
@@ -257,10 +263,20 @@ function appendHistory(entry) {
 }
 
 function renderHistory() {
-  const history = readHistory();
+  const query = historySearchEl.value.trim().toLowerCase();
+  const history = readHistory().filter(item => {
+    if (!query) return true;
+
+    const haystack = [item.title, item.model, item.prompt]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    return haystack.includes(query);
+  });
 
   if (!history.length) {
-    historyEl.innerHTML = '<p class="empty-state">No prompts yet.</p>';
+    historyEl.innerHTML = `<p class="empty-state">${query ? "No matching prompts." : "No prompts yet."}</p>`;
     return;
   }
 
@@ -269,7 +285,8 @@ function renderHistory() {
       item => `
         <button class="history-item" data-prompt="${escapeAttribute(item.prompt)}" data-model="${escapeAttribute(item.model)}">
           <span class="history-model">${item.model}</span>
-          <strong>${escapeHtml(trimText(item.prompt, 80))}</strong>
+          <strong class="history-title">${escapeHtml(item.title || buildSessionTitle(item.prompt))}</strong>
+          <span>${escapeHtml(trimText(item.prompt, 80))}</span>
           <span class="history-meta">${item.ok ? "Success" : "Error"} · ${new Date(item.createdAt).toLocaleTimeString()}</span>
         </button>
       `
@@ -356,6 +373,12 @@ function deleteSavedPrompt(name) {
   localStorage.setItem(savedPromptsKey, JSON.stringify(savedPrompts));
   renderSavedPrompts();
   statusEl.textContent = `Deleted prompt: ${name}`;
+}
+
+function buildSessionTitle(prompt) {
+  const normalized = (prompt ?? "").replace(/\s+/g, " ").trim();
+  if (!normalized) return "Untitled session";
+  return trimText(normalized, 40);
 }
 
 function trimText(text, maxLength) {
