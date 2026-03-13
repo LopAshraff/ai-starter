@@ -6,7 +6,8 @@
   "description": "Minimal local AI playground with OpenAI Responses API.",
   "scripts": {
     "dev": "node --watch server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "smoke": "node scripts/smoke-test.js"
   },
   "dependencies": {
     "openai": "^5.19.1"
