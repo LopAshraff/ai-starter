@@ -65,6 +65,7 @@ const server = http.createServer(async (req, res) => {
     const prompt = String(body.prompt ?? "").trim();
     const system = String(body.system ?? "").trim();
     const selectedModel = String(body.model ?? defaultModel).trim() || defaultModel;
+    const shouldStream = Boolean(body.stream);
 
     if (!prompt) {
       return sendJson(res, 400, { error: "Prompt is required." });
@@ -77,6 +78,30 @@ const server = http.createServer(async (req, res) => {
     }
 
     try {
+      if (shouldStream) {
+        res.writeHead(200, {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-cache, no-transform",
+          connection: "keep-alive"
+        });
+
+        const stream = await client.responses.create({
+          model: selectedModel,
+          instructions: system || "You are a concise and practical coding assistant.",
+          input: prompt,
+          stream: true
+        });
+
+        for await (const event of stream) {
+          if (event.type === "response.output_text.delta") {
+            res.write(event.delta);
+          }
+        }
+
+        res.end();
+        return;
+      }
+
       const response = await client.responses.create({
         model: selectedModel,
         instructions: system || "You are a concise and practical coding assistant.",

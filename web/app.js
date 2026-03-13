@@ -60,15 +60,17 @@ runEl.addEventListener("click", async () => {
         "content-type": "application/json"
       },
       body: JSON.stringify({
+        stream: true,
         model: modelEl.value,
         system: systemEl.value,
         prompt: promptEl.value
       })
     });
 
-    const data = await response.json();
+    const contentType = response.headers.get("content-type") ?? "";
 
-    if (!response.ok) {
+    if (!response.ok || contentType.includes("application/json")) {
+      const data = await response.json();
       resultEl.innerHTML = renderMarkdown(data.error ?? "Request failed.");
       statusEl.textContent = "Error";
       appendHistory({
@@ -80,13 +82,25 @@ runEl.addEventListener("click", async () => {
       return;
     }
 
-    resultEl.innerHTML = renderMarkdown(data.output || "No text output.");
-    metaEl.textContent = `Model: ${data.model}`;
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = "";
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      fullText += decoder.decode(value, { stream: true });
+      resultEl.innerHTML = renderMarkdown(fullText || "No text output.");
+      statusEl.textContent = "Streaming...";
+    }
+
+    resultEl.innerHTML = renderMarkdown(fullText || "No text output.");
+    metaEl.textContent = `Model: ${modelEl.value}`;
     statusEl.textContent = "Done";
     appendHistory({
       prompt: promptEl.value,
-      model: data.model,
-      output: data.output || "No text output.",
+      model: modelEl.value,
+      output: fullText || "No text output.",
       ok: true
     });
   } catch (error) {

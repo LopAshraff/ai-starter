@@ -23,6 +23,7 @@ Minimal AI playground for local development with OpenAI Responses API.
 - Local prompt history in the browser
 - Lightweight markdown rendering for responses
 - One-click preset loading for debugging, review, API design, and explanation
+- Streaming text responses in the UI
 
 ## Setup
 
