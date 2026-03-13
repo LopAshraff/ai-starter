@@ -11,7 +11,8 @@ const __dirname = path.dirname(__filename);
 loadEnv(path.join(__dirname, ".env"));
 
 const port = Number(process.env.PORT ?? 3001);
-const model = process.env.OPENAI_MODEL ?? "gpt-5";
+const defaultModel = process.env.OPENAI_MODEL ?? "gpt-5";
+const availableModels = ["gpt-5", "gpt-5-mini", "gpt-4.1-mini"];
 const client = process.env.OPENAI_API_KEY
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   : null;
@@ -47,7 +48,8 @@ const server = http.createServer(async (req, res) => {
   if (req.method === "GET" && url.pathname === "/api/health") {
     return sendJson(res, 200, {
       ok: true,
-      model,
+      defaultModel,
+      availableModels,
       hasApiKey: Boolean(process.env.OPENAI_API_KEY)
     });
   }
@@ -62,21 +64,28 @@ const server = http.createServer(async (req, res) => {
     const body = await readJson(req);
     const prompt = String(body.prompt ?? "").trim();
     const system = String(body.system ?? "").trim();
+    const selectedModel = String(body.model ?? defaultModel).trim() || defaultModel;
 
     if (!prompt) {
       return sendJson(res, 400, { error: "Prompt is required." });
     }
 
+    if (!availableModels.includes(selectedModel)) {
+      return sendJson(res, 400, {
+        error: `Model must be one of: ${availableModels.join(", ")}`
+      });
+    }
+
     try {
       const response = await client.responses.create({
-        model,
+        model: selectedModel,
         instructions: system || "You are a concise and practical coding assistant.",
         input: prompt
       });
 
       return sendJson(res, 200, {
         ok: true,
-        model,
+        model: selectedModel,
         output: response.output_text
       });
     } catch (error) {

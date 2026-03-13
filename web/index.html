@@ -17,6 +17,17 @@
       </section>
 
       <section class="panel">
+        <div class="grid">
+          <div>
+            <label for="model">Model</label>
+            <select id="model"></select>
+          </div>
+          <div class="health">
+            <span class="health-label">API key</span>
+            <strong id="api-key-state">Checking...</strong>
+          </div>
+        </div>
+
         <label for="system">System prompt</label>
         <textarea id="system" rows="3">You are a concise and practical coding assistant.</textarea>
 
@@ -31,7 +42,10 @@
 
       <section class="panel output">
         <div class="output-head">
-          <h2>Output</h2>
+          <div>
+            <h2>Output</h2>
+            <p id="meta">No request yet.</p>
+          </div>
           <button id="copy">Copy</button>
         </div>
         <pre id="result">No response yet.</pre>

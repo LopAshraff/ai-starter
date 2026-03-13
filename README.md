@@ -19,6 +19,7 @@ Minimal AI playground for local development with OpenAI Responses API.
 - Environment-driven API key
 - Smoke test script
 - Dev container and VS Code launch config
+- Runtime model picker in the UI
 
 ## Setup
 
