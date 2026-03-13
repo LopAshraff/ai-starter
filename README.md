@@ -26,6 +26,7 @@ Built for a clean Windows + WSL + Docker workflow. It starts small, but it alrea
 - Response output panel
 - Health endpoint
 - Environment-driven API key
+- Optional demo mode for no-key deploys
 - Smoke test script
 - Dev container and VS Code launch config
 - Runtime model picker in the UI
@@ -65,6 +66,16 @@ docker compose up --build
 
 Open [http://localhost:3001](http://localhost:3001)
 
+### No-Key Demo Mode
+
+If you do not have an OpenAI API key yet, set:
+
+```bash
+DEMO_MODE=1
+```
+
+The app will stay usable and stream local mock responses until you switch to a real API key.
+
 ## Why This Repo Exists
 
 - Start from a working OpenAI integration instead of a blank folder
@@ -80,7 +91,8 @@ This repo includes [render.yaml](./render.yaml) for a simple single-service depl
 
 What you need in Render:
 
-- `OPENAI_API_KEY` as a secret environment variable
+- nothing, if you want a demo deploy first
+- `OPENAI_API_KEY` later, if you want real model output
 - optional `OPENAI_MODEL` override if you do not want the default `gpt-5`
 
 Blueprint link:

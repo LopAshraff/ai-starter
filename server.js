@@ -13,6 +13,7 @@ loadEnv(path.join(__dirname, ".env"));
 const port = Number(process.env.PORT ?? 3001);
 const defaultModel = process.env.OPENAI_MODEL ?? "gpt-5";
 const availableModels = ["gpt-5", "gpt-5-mini", "gpt-4.1-mini"];
+const demoMode = process.env.DEMO_MODE === "1";
 const client = process.env.OPENAI_API_KEY
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   : null;
@@ -50,12 +51,13 @@ const server = http.createServer(async (req, res) => {
       ok: true,
       defaultModel,
       availableModels,
-      hasApiKey: Boolean(process.env.OPENAI_API_KEY)
+      hasApiKey: Boolean(process.env.OPENAI_API_KEY),
+      demoMode
     });
   }
 
   if (req.method === "POST" && url.pathname === "/api/chat") {
-    if (!client) {
+    if (!client && !demoMode) {
       return sendJson(res, 400, {
         error: "OPENAI_API_KEY is missing. Add it to .env first."
       });
@@ -87,6 +89,38 @@ const server = http.createServer(async (req, res) => {
         .join("\n\n");
       const currentTurn = context ? `Context:\n${context}\n\nPrompt:\n${prompt}` : prompt;
       const finalInput = transcript ? `${transcript}\n\nUSER:\n${currentTurn}` : currentTurn;
+
+      if (demoMode && !client) {
+        const output = buildDemoResponse({
+          model: selectedModel,
+          system,
+          prompt,
+          context,
+          history
+        });
+
+        if (shouldStream) {
+          res.writeHead(200, {
+            "content-type": "text/plain; charset=utf-8",
+            "cache-control": "no-cache, no-transform",
+            connection: "keep-alive"
+          });
+
+          for (const chunk of chunkText(output, 24)) {
+            res.write(chunk);
+            await sleep(25);
+          }
+
+          res.end();
+          return;
+        }
+
+        return sendJson(res, 200, {
+          ok: true,
+          model: selectedModel,
+          output
+        });
+      }
 
       if (shouldStream) {
         res.writeHead(200, {
@@ -154,6 +188,45 @@ function loadEnv(filePath) {
 
 function requireText(filePath) {
   return readFileSync(filePath, "utf8");
+}
+
+function buildDemoResponse({ model, system, prompt, context, history }) {
+  const recentTurns = Array.isArray(history) ? history.length : 0;
+  const summary = [
+    "Demo mode is active, so this response is generated locally without calling the OpenAI API.",
+    "",
+    `Model selected: ${model}`,
+    `System prompt set: ${system ? "yes" : "no"}`,
+    `Previous turns in session: ${recentTurns}`,
+    "",
+    "Prompt summary:",
+    `- ${trimText(prompt, 180)}`,
+    "",
+    context
+      ? `Context summary:\n- ${trimText(context.replace(/\s+/g, " "), 220)}`
+      : "Context summary:\n- No extra context was attached.",
+    "",
+    "Suggested next step:",
+    "- Add a real OPENAI_API_KEY when you want actual model output."
+  ];
+
+  return summary.join("\n");
+}
+
+function chunkText(text, size) {
+  const chunks = [];
+  for (let index = 0; index < text.length; index += size) {
+    chunks.push(text.slice(index, index + size));
+  }
+  return chunks;
+}
+
+function trimText(text, maxLength) {
+  return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function readJson(req) {

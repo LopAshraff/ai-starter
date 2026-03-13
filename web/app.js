@@ -262,7 +262,13 @@ async function loadHealth() {
   }
 
   apiKeyStateEl.textContent = data.hasApiKey ? "Loaded" : "Missing";
-  metaEl.textContent = `Default model: ${data.defaultModel}`;
+  if (data.demoMode) {
+    apiKeyStateEl.textContent = "Demo mode";
+  }
+
+  metaEl.textContent = data.demoMode
+    ? `Default model: ${data.defaultModel} · local demo responses enabled`
+    : `Default model: ${data.defaultModel}`;
 }
 
 function loadPresets() {
