@@ -71,7 +71,8 @@ button {
 }
 
 textarea,
-select {
+select,
+input {
   width: 100%;
   margin-bottom: 16px;
   border-radius: 14px;
@@ -85,6 +86,10 @@ select {
 select {
   appearance: none;
   resize: none;
+}
+
+input {
+  color: var(--text);
 }
 
 .actions,
@@ -187,6 +192,45 @@ button:disabled {
   gap: 10px;
 }
 
+.saved-list {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.saved-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #10151c;
+  padding: 12px 14px;
+}
+
+.saved-copy {
+  min-width: 0;
+}
+
+.saved-copy strong,
+.saved-copy span {
+  display: block;
+}
+
+.saved-copy strong {
+  margin-bottom: 4px;
+}
+
+.saved-copy span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.saved-item button {
+  white-space: nowrap;
+}
+
 .history-item {
   width: 100%;
   text-align: left;
@@ -258,6 +302,10 @@ button:disabled {
   }
 
   .preset-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .saved-item {
     grid-template-columns: 1fr;
   }
 }

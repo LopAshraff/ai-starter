@@ -23,6 +23,7 @@ Minimal AI playground for local development with OpenAI Responses API.
 - Local prompt history in the browser
 - Lightweight markdown rendering for responses
 - One-click preset loading for debugging, review, API design, and explanation
+- Save reusable prompt workflows locally in the browser
 - Streaming text responses in the UI
 - Context textarea and file upload for code, logs, and notes
 - Export and import session history as JSON

@@ -36,6 +36,18 @@
           <button id="apply-preset" type="button">Apply preset</button>
         </div>
 
+        <div class="preset-bar">
+          <div>
+            <label for="save-name">Prompt library</label>
+            <input id="save-name" type="text" placeholder="Name this workflow" />
+          </div>
+          <button id="save-prompt" type="button">Save prompt</button>
+        </div>
+
+        <div id="saved-prompts" class="saved-list">
+          <p class="empty-state">No saved prompts yet.</p>
+        </div>
+
         <label for="system">System prompt</label>
         <textarea id="system" rows="3">You are a concise and practical coding assistant.</textarea>
 

@@ -10,13 +10,17 @@ const clearHistoryEl = document.querySelector("#clear-history");
 const exportSessionEl = document.querySelector("#export-session");
 const importSessionEl = document.querySelector("#import-session");
 const applyPresetEl = document.querySelector("#apply-preset");
+const saveNameEl = document.querySelector("#save-name");
+const savePromptEl = document.querySelector("#save-prompt");
 const resultEl = document.querySelector("#result");
 const statusEl = document.querySelector("#status");
 const apiKeyStateEl = document.querySelector("#api-key-state");
 const fileStateEl = document.querySelector("#file-state");
 const metaEl = document.querySelector("#meta");
 const historyEl = document.querySelector("#history");
+const savedPromptsEl = document.querySelector("#saved-prompts");
 const historyKey = "ai-starter-history";
+const savedPromptsKey = "ai-starter-saved-prompts";
 const presets = [
   {
     id: "debug",
@@ -51,6 +55,7 @@ const presets = [
 await loadHealth();
 loadPresets();
 renderHistory();
+renderSavedPrompts();
 
 runEl.addEventListener("click", async () => {
   statusEl.textContent = "Running...";
@@ -181,6 +186,30 @@ applyPresetEl.addEventListener("click", () => {
   statusEl.textContent = `Preset loaded: ${preset.label}`;
 });
 
+savePromptEl.addEventListener("click", () => {
+  const name = saveNameEl.value.trim();
+  if (!name) {
+    statusEl.textContent = "Enter a name first";
+    saveNameEl.focus();
+    return;
+  }
+
+  const savedPrompts = readSavedPrompts().filter(item => item.name !== name);
+  savedPrompts.unshift({
+    name,
+    model: modelEl.value,
+    system: systemEl.value,
+    prompt: promptEl.value,
+    context: contextEl.value,
+    createdAt: new Date().toISOString()
+  });
+
+  localStorage.setItem(savedPromptsKey, JSON.stringify(savedPrompts.slice(0, 12)));
+  renderSavedPrompts();
+  saveNameEl.value = "";
+  statusEl.textContent = `Saved prompt: ${name}`;
+});
+
 fileEl.addEventListener("change", async event => {
   const file = event.target.files?.[0];
   if (!file) {
@@ -256,12 +285,77 @@ function renderHistory() {
   }
 }
 
+function renderSavedPrompts() {
+  const savedPrompts = readSavedPrompts();
+
+  if (!savedPrompts.length) {
+    savedPromptsEl.innerHTML = '<p class="empty-state">No saved prompts yet.</p>';
+    return;
+  }
+
+  savedPromptsEl.innerHTML = savedPrompts
+    .map(
+      item => `
+        <div class="saved-item">
+          <div class="saved-copy">
+            <strong>${escapeHtml(item.name)}</strong>
+            <span>${escapeHtml(item.model)} · ${escapeHtml(trimText(item.prompt || "No prompt", 72))}</span>
+          </div>
+          <button type="button" data-action="load" data-name="${escapeAttribute(item.name)}">Load</button>
+          <button type="button" data-action="delete" data-name="${escapeAttribute(item.name)}">Delete</button>
+        </div>
+      `
+    )
+    .join("");
+
+  for (const button of savedPromptsEl.querySelectorAll("button")) {
+    button.addEventListener("click", () => {
+      const name = button.dataset.name ?? "";
+      if (button.dataset.action === "load") {
+        loadSavedPrompt(name);
+        return;
+      }
+
+      deleteSavedPrompt(name);
+    });
+  }
+}
+
 function readHistory() {
   try {
     return JSON.parse(localStorage.getItem(historyKey) ?? "[]");
   } catch {
     return [];
   }
+}
+
+function readSavedPrompts() {
+  try {
+    return JSON.parse(localStorage.getItem(savedPromptsKey) ?? "[]");
+  } catch {
+    return [];
+  }
+}
+
+function loadSavedPrompt(name) {
+  const item = readSavedPrompts().find(entry => entry.name === name);
+  if (!item) {
+    statusEl.textContent = "Saved prompt not found";
+    return;
+  }
+
+  modelEl.value = item.model ?? modelEl.value;
+  systemEl.value = item.system ?? "";
+  promptEl.value = item.prompt ?? "";
+  contextEl.value = item.context ?? "";
+  statusEl.textContent = `Loaded prompt: ${item.name}`;
+}
+
+function deleteSavedPrompt(name) {
+  const savedPrompts = readSavedPrompts().filter(item => item.name !== name);
+  localStorage.setItem(savedPromptsKey, JSON.stringify(savedPrompts));
+  renderSavedPrompts();
+  statusEl.textContent = `Deleted prompt: ${name}`;
 }
 
 function trimText(text, maxLength) {
